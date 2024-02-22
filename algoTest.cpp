@@ -69,6 +69,9 @@ class Solution
                 swap(nums[i], nums[j]);
             }
         }
+
+        swap(nums[i], nums[r]);
+        return i;
     }
 
     int randomized_partition(vector<int> &nums, int l, int r)
@@ -88,7 +91,7 @@ class Solution
         }
     }
 
-  public:
+public:
     // 链表的中间节点
     ListNode *middleNode(ListNode *head)
     {
@@ -654,7 +657,8 @@ class Solution
         vector<int> ops(m);
 
         iota(ops.begin(), ops.end(), 0);
-        sort(ops.begin(), ops.end(), [&](int i, int j) { return indices[i] < indices[j]; });
+        sort(ops.begin(), ops.end(), [&](int i, int j)
+             { return indices[i] < indices[j]; });
 
         string ans;
         int pt = 0;
@@ -853,14 +857,14 @@ class Solution
         return true;
     }
 
-  private:
+private:
     bool line[9][9];     // 行
     bool column[9][9];   // 列
     bool block[3][3][9]; // 九宫格
     bool valid;
     vector<pair<int, int>> spaces; // 用于存放数独元素的坐标
 
-  public:
+public:
     /**
      * @brief 解数独的唯一解的回溯函数
      * 通过判断填入数组的当前行，列和九宫格是否出现，来递归回溯出唯一解
@@ -971,7 +975,7 @@ class Solution
         return prev;
     }
 
-  public:
+public:
     vector<int> cur;
     /**
      * @brief 组合总和的回溯算法
@@ -1004,7 +1008,7 @@ class Solution
             cur.push_back(candidates[i]); // 将数组中元素加入记录组合的数组中
             // dfsCombinationSum(i , rs, candidates, target, res);////candidates 中的每个数字在每个组合中能使用多次
             dfsCombinationSum(i + 1, rs, candidates, target, res); // candidates 中的每个数字在每个组合中只能使用一次
-            cur.pop_back(); // 将最后加入的元素去除，搜寻下一个组合
+            cur.pop_back();                                        // 将最后加入的元素去除，搜寻下一个组合
         }
     }
     /**
@@ -1136,7 +1140,7 @@ class Solution
         return ans;
     }
 
-  public:
+public:
     int buyChoco(vector<int> &prices, int money)
     {
         int first = INT_MAX, second = INT_MAX;
