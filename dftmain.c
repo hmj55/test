@@ -180,7 +180,7 @@ struct ListNode *addTwoNumbers(struct ListNode *l1, struct ListNode *l2)
     return res->next;
 }
 
-//通过使用两个指针i和j，从数组的两端向中间移动，将小于基准值的元素移到左侧，将大于基准值的元素移到右侧，最终将基准值放置在正确的位置上。该函数的作用是对数组进行划分，以便进行快速排序的下一步操作。
+// 通过使用两个指针i和j，从数组的两端向中间移动，将小于基准值的元素移到左侧，将大于基准值的元素移到右侧，最终将基准值放置在正确的位置上。该函数的作用是对数组进行划分，以便进行快速排序的下一步操作。
 int get_standard(int *array, int i, int j)
 {
     // 基准数据
@@ -2473,8 +2473,8 @@ int maxSubarraySumCircular(int *nums, int numsSize)
     else
         return fmax(maxRes, sum - minRes);
 }
-/**********
- * 任意子数组和的绝对值的最大值
+/**
+ *@brief 任意子数组和的绝对值的最大值
  */
 int maxAbsoluteSum(int *nums, int numsSize)
 {
@@ -2496,68 +2496,131 @@ int maxAbsoluteSum(int *nums, int numsSize)
     return fmax(positiveMax, -negativeMin);
 }
 
+// 寻找数组最小值的下标
+int argmin(int *index, int index_len)
+{
+    int min_index = 0;
+    int min = index[0];
+    for (int i = 1; i < index_len; i++)
+    {
+        if (index[i] < min)
+        {
+            min = index[i];
+            min_index = i;
+        }
+    }
+    return min_index;
+}
+
+/**
+ * @brief 寻找波峰函数
+ *
+ * @param data 存放数据的数组
+ * @param index 存放峰值点下标的数组
+ * @param len_index 峰值个数，即index数组长度
+ */
+void AMPD(float *data, int *index, int *len_index)
+{
+#define DATA_LEN 50
+    int size = DATA_LEN;
+    int p_data[DATA_LEN] = {0};
+    int arr_rowsum[DATA_LEN] = {0};
+    int min_index, max_window_length;
+    *len_index = 0;
+
+    for (int i = 0; i < size; i++)
+    {
+        p_data[i] = 0;
+    }
+    for (int k = 1; k < size / 2 + 1; k++)
+    {
+        int row_sum = 0;
+        for (int i = k; i < size - k; i++)
+        {
+            if ((data[i] > data[i - k]) && (data[i] > data[i + k]))
+                row_sum -= 1;
+        }
+        *(arr_rowsum + k - 1) = row_sum;
+    }
+
+    min_index = argmin(arr_rowsum, size / 2); // 此处为最大的窗口
+    max_window_length = min_index;
+
+    for (int k = 1; k < max_window_length + 1; k++)
+    {
+        for (int i = 1; i < size - k; i++)
+        {
+            if ((data[i] > data[i - k]) && (data[i] > data[i + k]))
+                p_data[i] += 1;
+        }
+    }
+
+    for (int i_find = 0; i_find < size; i_find++)
+    {
+        if (p_data[i_find] == max_window_length)
+        {
+            index[*len_index] = i_find;
+            (*len_index) += 1;
+        }
+    }
+}
+
+/**
+ * @brief 移除float数组中相邻重复元素中一个，由后面元素前移补充
+ *
+ * @param value 需要处理的属猪
+ * @param len  数组长度
+ * @param res   接收处理后的数组
+ */
+void removeDuplicatesfloat(float *value, int len, float *res)
+{
+    int retSize = 0;
+    for (int i = 0; i < len; i++)
+    {
+        if (retSize > 0 && res[retSize - 1] == value[i])
+        {
+            retSize = retSize;
+        }
+        else
+        {
+            res[retSize++] = value[i];
+        }
+    }
+    res[retSize] = 0.0f;
+}
+
 int main(int argc, const char *argv[])
 {
-    // char *data = "ABCDEFGHIJK";
-    // char *data1 = "abc";
-    // char *resStr = intToRomanOther(123);
-    // printf("len1:%d\tlen2:%d\n", strlen(data), strlen(resStr));
-    // // printf("\n%s\n", resStr);
-    // int resNum = romanToInt("III");
-    // printf("%d\n", resNum);
+#define VALUE_LEN (50)
+    float value2[VALUE_LEN] = {
+        5, 15, 25, 35, 45, 55, 65, 75, 85, 95, 85, 75, 65, 55, 45, 35, 25, 15, 5, 0, 5, 15, 25, 35, 45, 55, 65, 75, 85, 95, 85, 75, 65, 55, 45, 35, 25, 15, 5, 0, 5, 15, 25, 35, 45, 55, 65, 75, 85, 95};
+    int index[VALUE_LEN] = {0};
+    int lenIndexNum = 0;
 
-    // float array[] = {-1, -2, 1, 2, 3, 4, 5, 4, 5, 6};
-    // int arrsize = sizeof(array) / sizeof(array[0]);
-    // int index = startPosition(array, 0, arrsize, 1);
-    // printf("array[%d]:%.2f\n", index, array[index]);
+    float removedValues[VALUE_LEN] = {0};
+    removeDuplicatesfloat(value2, VALUE_LEN, removedValues); // 去除相邻重复元素中的一个
 
-    // int target = 2;
-    // index = upperIndex(array, 0, arrsize, target, 1);
-    // printf("upp array[%d]:%.2f\n", index, array[index]);
+    AMPD(removedValues, index, &lenIndexNum); // 查找出波峰
+    printf("lenIndexNum = %d\n", lenIndexNum);
 
-    // index = lowerIndex(array, 0, arrsize, target, 1);
-    // printf("low array[%d]:%.2f\n", index, array[index]);
+    for (int i = 0; i < lenIndexNum; i++)
+    {
+        printf("maxValue index[%d]:%f\t", index[i], removedValues[index[i]]);
+    }
+    printf("\n");
 
-    // char data[][3] = {"ab", "a"};
-    // char *strs = data[0];
-    // printf("str:%s\n", longestCommonPrefix(&strs, 2));
-    // int arr[] = {1, -1, -1, 0};
-    // int returnSize = 0;
-    // int *columnSize = NULL;
-    // printf("%s\n", "start");
-    // threeSum(arr, sizeof(arr) / sizeof(arr[0]), &returnSize, &columnSize);
+    // 反转数组
+    for (int i = 0; i < VALUE_LEN; i++)
+    {
+        removedValues[i] *= -1;
+    }
 
-    // int arr[] = {1, -2, -5, -4, -3, 3, 3, 5};
-    // fourSum(arr, sizeof(arr) / sizeof(arr[0]), -11, &returnSize, &columnSize);
-    // printf("returnSize:%d\n", returnSize);
+    AMPD(removedValues, index, &lenIndexNum); // 查找出反转后数组的波峰，也就是原数组的波峰
+    printf("lenIndexNum = %d\n", lenIndexNum);
 
-    // char data[] = "(";
-    // int res = isValid(data);
-    // int res = 0;
-
-    // generateParenthesis(4, &res);
-    // printf("res:%d\n", res);
-
-    // char data[] = "124";
-    // arrReversed(data, strlen(data));
-    // printf("%s\n", data);
-
-    // int size = 0;
-    // char *buff = digitalResolution(4, &size);
-    // printf("size:%d\n", size);
-    // printf("%d\n", divide(10, 3));
-
-    // unsigned char data[6] = {0x01, 0x39, 0x02, 0x34, 0x11, 0x01};
-    // xBitData28BitData(data, 6, 9);
-
-    // unsigned int rData[6] = {0x0139, 0x2239, 0x0203};
-    // bitData2xBitData(rData, 3, 9);
-
-    // int data[5] = {5, 1, -2, 4, -1};
-    // int rs = maxSubarraySumCircular(data, 5);
-    // printf("%d\n", rs);
-
-    print_data("123456789012345678901234567890", 30);
-
+    for (int i = 0; i < lenIndexNum; i++)
+    {
+        printf("minValue index[%d]:%f\t", index[i], -removedValues[index[i]]);
+    }
     return 0;
 }
